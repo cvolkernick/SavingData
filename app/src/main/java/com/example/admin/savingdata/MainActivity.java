@@ -8,10 +8,20 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.admin.savingdata.data.LocalDataContract;
+import com.example.admin.savingdata.data.LocalDataSource;
+import com.example.admin.savingdata.model.Person;
+
+import org.w3c.dom.Text;
+
 public class MainActivity extends AppCompatActivity {
 
     private EditText etSharedPref;
     private TextView tvSharedPref;
+    private EditText etFirstName;
+    private EditText etLastName;
+    private EditText etGender;
+    private TextView tvPersons;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +33,10 @@ public class MainActivity extends AppCompatActivity {
     private void bindViews() {
         etSharedPref = findViewById(R.id.etSharedPref);
         tvSharedPref = findViewById(R.id.tvSharedPref);
+        etFirstName = findViewById(R.id.etFirstName);
+        etLastName = findViewById(R.id.etLastName);
+        etGender = findViewById(R.id.etGender);
+        tvPersons = findViewById(R.id.tvAllPersons);
     }
 
     public void handlingSharedPref(View view) {
@@ -46,5 +60,24 @@ public class MainActivity extends AppCompatActivity {
 
     public void handlingSQLite(View view) {
 
+        LocalDataSource dataSource = new LocalDataSource(this);
+
+        switch (view.getId())
+        {
+            case R.id.btnSavePerson:
+                Person person = new Person(
+                        etFirstName.getText().toString(),
+                        etLastName.getText().toString(),
+                        etGender.getText().toString()
+                );
+                long rowNumber = dataSource.savePerson(person);
+
+                Toast.makeText(this, String.valueOf(rowNumber), Toast.LENGTH_LONG).show();
+
+                break;
+            case R.id.btnRetrievePerson:
+                tvPersons.setText(dataSource.getAllPerson().toString());
+                break;
+        }
     }
 }
